@@ -1,0 +1,85 @@
+version: '3.8'
+
+# ISOTOPE Automation Stack — Phase 1
+# Services: n8n + WAHA + Telegram Bot
+# Deploy from: /root/isotope/automation/
+
+services:
+  # ============================================
+  # N8N — Automation Backbone
+  # ============================================
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: isotope-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD}
+      - WEBHOOK_URL=http://${VPS_IP}:5678
+      - N8N_HOST=0.0.0.0
+      - PORT=5678
+      - GENERIC_TIMEZONE=Africa/Johannesburg
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+    networks:
+      - isotope-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # WAHA — WhatsApp API (No Meta Approval)
+  # ============================================
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: isotope-waha
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    environment:
+      - WAHA_SESSIONS_PATH=/sessions
+      - LOG_LEVEL=info
+    volumes:
+      - ./waha-sessions:/sessions
+    networks:
+      - isotope-network
+    depends_on:
+      - n8n
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8765/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # TELEGRAM BOT — Trial Conversion
+  # ============================================
+  telegram-bot:
+    build:
+      context: ./telegram-bot
+      dockerfile: Dockerfile
+    container_name: isotope-telegram
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - FASTAPI_URL=http://${VPS_IP}:8100
+      - N8N_WEBHOOK_URL=http://isotope-n8n:5678/webhook
+      - GOOGLE_SHEET_ID=${GOOGLE_SHEET_ID}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
+    networks:
+      - isotope-network
+    depends_on:
+      - n8n
+
+networks:
+  isotope-network:
+    driver: bridge
+
+volumes:
+  n8n-data:
+  waha-sessions:

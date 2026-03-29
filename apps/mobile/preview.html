@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISOTOPE — Elite Gold Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00DC82;
+            --primary-glow: rgba(0, 220, 130, 0.4);
+            --secondary: #7C3AED;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --success: #10B981;
+            --bg-dark: #030712;
+            --bg-card: #0B0F19;
+            --bg-elevated: #111827;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9CA3AF;
+            --text-muted: #4B5563;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(0, 220, 130, 0.3);
+            --gradient-1: linear-gradient(135deg, #00DC82 0%, #059669 100%);
+            --gradient-2: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
+            --gradient-3: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #B8860B 50%, #FFD700 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(0, 220, 130, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-gradient-1 {
+            background: var(--gradient-1);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .bg-gradient-2 {
+            background: var(--gradient-2);
+            bottom: -200px;
+            left: -200px;
+            animation-delay: -7s;
+        }
+
+        .bg-gradient-3 {
+            background: var(--gradient-3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .logo-mark {
+            width: 52px;
+            height: 52px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-symbol {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Atomic orbit rings */
+        .logo-ring {
+            position: absolute;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 50%;
+            animation: rotate 8s linear infinite;
+        }
+
+        .logo-ring-1 {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        .logo-ring-2 {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-color: rgba(0, 220, 130, 0.6);
+            animation-direction: reverse;
+            animation-duration: 6s;
+        }
+
+        .logo-ring-3 {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border: none;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .logo-center {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--gradient-gold);
+            border-radius: 4px;
+            transform: translate(-50%, -50%) rotate(45deg);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            z-index: 10;
+        }
+
+        .logo-center::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-gold);
+            border-radius: 4px;
+            transform: rotate(45deg);
+            opacity: 0.5;
+            filter: blur(4px);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-badge {
+            background: rgba(0, 220, 130, 0.15);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(0, 220, 130, 0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: #000;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .btn-gold {
+            background: var(--gradient-gold);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px 120px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.8), rgba(11, 15, 25, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card.highlight {
+            background: linear-gradient(135deg, rgba(0, 220, 130, 0.1), rgba(5, 150, 105, 0.05));
+            border-color: rgba(0, 220, 130, 0.3);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value.positive {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-value.gold {
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Upgrade Banner */
+        .upgrade-banner {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .upgrade-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .upgrade-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upgrade-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .upgrade-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .upgrade-stat {
+            text-align: center;
+        }
+
+        .upgrade-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .upgrade-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .section-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .signal-count {
+            background: var(--bg-elevated);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
+        .signal-count .remaining {
+            color: var(--primary);
+        }
+
+        /* Signal Card */
+        .signal-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(11, 15, 25, 0.95));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .signal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .signal-card:hover {
+            transform: translateX(8px);
+            border-color: var(--border-glow);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .signal-card:hover::before {
+            opacity: 1;
+        }
+
+        .signal-card.buy::before {
+            background: var(--gradient-1);
+        }
+
+        .signal-card.sell::before {
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+        }
+
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .signal-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .signal-direction {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .signal-direction.buy {
+            background: rgba(0, 220, 130, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(0, 220, 130, 0.4);
+        }
+
+        .signal-direction.sell {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .signal-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .signal-confidence {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .confidence-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .signal-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Price Grid */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .price-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+
+        .price-box:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .price-value {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .price-value.entry {
+            color: var(--text-primary);
+        }
+
+        .price-value.sl {
+            color: var(--danger);
+        }
+
+        .price-value.tp {
+            color: var(--success);
+        }
+
+        .price-rr {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* Rationale */
+        .signal-rationale {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .rationale-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .agent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .agent-tag {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--secondary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+
+        .agent-tag.active {
+            background: rgba(0, 220, 130, 0.15);
+            color: var(--primary);
+            border-color: rgba(0, 220, 130, 0.3);
+        }
+
+        /* Actions */
+        .signal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-copy {
+            background: var(--gradient-1);
+            color: #000;
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-share {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-share:hover {
+            background: var(--bg-card);
+            border-color: var(--text-muted);
+        }
+
+        /* Premium Overlay */
+        .premium-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(3, 7, 18, 0.95), rgba(11, 15, 25, 0.98));
+            backdrop-filter: blur(12px);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .signal-card.premium .premium-overlay {
+            display: flex;
+        }
+
+        .premium-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-gold);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.6); }
+        }
+
+        .premium-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .premium-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 24px;
+            max-width: 300px;
+        }
+
+        .premium-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .premium-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .premium-feature-icon {
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 220, 130, 0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 12px;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 560px;
+            width: 100%;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-backdrop.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-gold);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pricing-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--text-muted);
+            transform: scale(1.02);
+        }
+
+        .pricing-card.popular {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(180, 83, 9, 0.05));
+            border-color: rgba(245, 158, 11, 0.4);
+            position: relative;
+        }
+
+        .pricing-card.popular::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--gradient-gold);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .pricing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .pricing-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pricing-price {
+            text-align: right;
+        }
+
+        .pricing-amount {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pricing-period {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pricing-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pricing-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .pricing-feature-icon {
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 220, 130, 0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .pricing-card.popular .btn {
+            background: var(--gradient-gold);
+            width: 100%;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .pricing-card:not(.popular) .btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 100%;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .modal-guarantee {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(3, 7, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 12px 24px;
+            display: none;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+            }
+
+            .container {
+                padding-bottom: 100px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .price-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .upgrade-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .upgrade-stats {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 220, 130, 0.15);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="bg-gradient bg-gradient-1"></div>
+        <div class="bg-gradient bg-gradient-2"></div>
+        <div class="bg-gradient bg-gradient-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <div class="logo-mark">
+                <div class="logo-symbol">
+                    <div class="logo-ring logo-ring-1"></div>
+                    <div class="logo-ring logo-ring-2"></div>
+                    <div class="logo-ring logo-ring-3"></div>
+                    <div class="logo-center"></div>
+                </div>
+            </div>
+            <div>
+                <div class="logo-text">ISOTOPE</div>
+                <div style="font-size: 11px; color: var(--text-muted); letter-spacing: 1px;">ELITE INTELLIGENCE</div>
+            </div>
+            <span class="logo-badge">BETA</span>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-ghost" onclick="showToast('Login coming soon')">
+                <span>👤</span> Sign In
+            </button>
+            <button class="btn btn-gold" onclick="openUpgrade()">
+                <span>⚡</span> Upgrade
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card highlight">
+                <div class="stat-label">Portfolio Value</div>
+                <div class="stat-value positive" data-count="245.50">$0.00</div>
+                <div class="stat-change positive">
+                    <span>📈</span>
+                    <span>+$127.30 this week</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value gold" data-count="78">0%</div>
+                <div class="stat-change positive">
+                    <span>Top 5% of traders</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Signals Copied</div>
+                <div class="stat-value" data-count="47">0</div>
+                <div class="stat-change positive">
+                    <span>12 this week</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Streak</div>
+                <div class="stat-value" data-count="7">0</div>
+                <div class="stat-change positive">
+                    <span>🔥 Personal best</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upgrade Banner -->
+        <div class="upgrade-banner">
+            <div class="upgrade-content">
+                <div class="upgrade-title">
+                    <span>🔓</span> Unlock Elite Access
+                </div>
+                <div class="upgrade-subtitle">Pro members earn 3.2x more with unlimited signals</div>
+                <div class="upgrade-stats">
+                    <div class="upgrade-stat">
+                        <div class="upgrade-stat-value">342%</div>
+                        <div class="upgrade-stat-label">Avg ROI</div>
+                    </div>
+                    <div class="upgrade-stat">
+                        <div class="upgrade-stat-value">15K+</div>
+                        <div class="upgrade-stat-label">Members</div>
+                    </div>
+                    <div class="upgrade-stat">
+                        <div class="upgrade-stat-value">$2.4M</div>
+                        <div class="upgrade-stat-label">Profits Generated</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-gold" onclick="openUpgrade()" style="min-width: 160px;">
+                Go Pro →
+            </button>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-title-icon">📊</div>
+                Live Signals
+            </div>
+            <div class="section-meta">
+                <span class="signal-count">
+                    <span class="remaining">3</span> signals remaining today
+                </span>
+            </div>
+        </div>
+
+        <!-- Signal 1 - BUY (Free) -->
+        <div class="signal-card buy">
+            <div class="signal-header">
+                <div class="signal-badge">
+                    <div class="signal-direction buy">BUY</div>
+                    <div class="signal-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 87%"></div>
+                        </div>
+                        <span>87%</span>
+                    </div>
+                </div>
+                <div class="signal-time">2 min ago</div>
+            </div>
+            <div class="price-grid">
+                <div class="price-box">
+                    <div class="price-label">Entry</div>
+                    <div class="price-value entry">$2,345.00</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">Stop Loss</div>
+                    <div class="price-value sl">$2,330.00</div>
+                    <div class="price-rr">-0.6%</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 1</div>
+                    <div class="price-value tp">$2,367.50</div>
+                    <div class="price-rr">1:1.5</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 2</div>
+                    <div class="price-value tp">$2,390.00</div>
+                    <div class="price-rr">1:3.0</div>
+                </div>
+            </div>
+            <div class="signal-rationale">
+                <div class="rationale-title">🧠 AI Analysis</div>
+                Strong bullish confluence detected. EMA alignment (9&gt;21&gt;50) confirms uptrend. RSI recovering from oversold at 32. MACD histogram turning positive. Price bouncing from key support zone at $2,335-2,340 with high volume.
+                <div class="agent-tags">
+                    <span class="agent-tag active">✓ Trend</span>
+                    <span class="agent-tag active">✓ Momentum</span>
+                    <span class="agent-tag">Volatility</span>
+                    <span class="agent-tag active">✓ Structure</span>
+                    <span class="agent-tag active">✓ Sentiment</span>
+                </div>
+            </div>
+            <div class="signal-actions">
+                <button class="btn-action btn-copy" onclick="copySignal(this)">
+                    <span>📋</span> Copy Signal
+                </button>
+                <button class="btn-action btn-share" onclick="shareSignal()">
+                    <span>🔗</span> Share
+                </button>
+            </div>
+        </div>
+
+        <!-- Signal 2 - SELL (Free) -->
+        <div class="signal-card sell">
+            <div class="signal-header">
+                <div class="signal-badge">
+                    <div class="signal-direction sell">SELL</div>
+                    <div class="signal-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 75%"></div>
+                        </div>
+                        <span>75%</span>
+                    </div>
+                </div>
+                <div class="signal-time">18 min ago</div>
+            </div>
+            <div class="price-grid">
+                <div class="price-box">
+                    <div class="price-label">Entry</div>
+                    <div class="price-value entry">$2,355.00</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">Stop Loss</div>
+                    <div class="price-value sl">$2,370.00</div>
+                    <div class="price-rr">+0.6%</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 1</div>
+                    <div class="price-value tp">$2,332.50</div>
+                    <div class="price-rr">1:1.5</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 2</div>
+                    <div class="price-value tp">$2,310.00</div>
+                    <div class="price-rr">1:3.0</div>
+                </div>
+            </div>
+            <div class="signal-rationale">
+                <div class="rationale-title">🧠 AI Analysis</div>
+                Moderate bearish setup. RSI overbought at 76, showing divergence. Price rejected from resistance at $2,360 twice. MACD bearish crossover confirmed. Expecting pullback to support zone.
+                <div class="agent-tags">
+                    <span class="agent-tag">Trend</span>
+                    <span class="agent-tag active">✓ Momentum</span>
+                    <span class="agent-tag active">✓ Volatility</span>
+                    <span class="agent-tag active">✓ Structure</span>
+                    <span class="agent-tag">Sentiment</span>
+                </div>
+            </div>
+            <div class="signal-actions">
+                <button class="btn-action btn-copy" onclick="copySignal(this)">
+                    <span>📋</span> Copy Signal
+                </button>
+                <button class="btn-action btn-share" onclick="shareSignal()">
+                    <span>🔗</span> Share
+                </button>
+            </div>
+        </div>
+
+        <!-- Signal 3 - BUY (Premium) -->
+        <div class="signal-card buy premium">
+            <div class="signal-header">
+                <div class="signal-badge">
+                    <div class="signal-direction buy">BUY</div>
+                    <div class="signal-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 92%"></div>
+                        </div>
+                        <span>92%</span>
+                    </div>
+                </div>
+                <div class="signal-time">Just now</div>
+            </div>
+            <div class="price-grid">
+                <div class="price-box">
+                    <div class="price-label">Entry</div>
+                    <div class="price-value entry">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">Stop Loss</div>
+                    <div class="price-value sl">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 1</div>
+                    <div class="price-value tp">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 2</div>
+                    <div class="price-value tp">???</div>
+                </div>
+            </div>
+            <div class="signal-rationale" style="filter: blur(4px);">
+                <div class="rationale-title">🧠 AI Analysis</div>
+                Premium signal content blurred for free users.
+            </div>
+            
+            <div class="premium-overlay">
+                <div class="premium-icon">👑</div>
+                <div class="premium-title">Pro Signal</div>
+                <div class="premium-subtitle">This 92% confidence signal is waiting for you</div>
+                <div class="premium-features">
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Full entry, SL & TP levels</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Complete AI analysis</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Real-time notifications</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Unlimited daily signals</span>
+                    </div>
+                </div>
+                <button class="btn btn-gold" onclick="openUpgrade()" style="min-width: 200px;">
+                    Unlock Pro — $29/mo
+                </button>
+            </div>
+        </div>
+
+        <!-- Signal 4 - Premium -->
+        <div class="signal-card sell premium">
+            <div class="signal-header">
+                <div class="signal-badge">
+                    <div class="signal-direction sell">SELL</div>
+                    <div class="signal-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: 89%"></div>
+                        </div>
+                        <span>89%</span>
+                    </div>
+                </div>
+                <div class="signal-time">5 min ago</div>
+            </div>
+            <div class="price-grid">
+                <div class="price-box">
+                    <div class="price-label">Entry</div>
+                    <div class="price-value entry">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">Stop Loss</div>
+                    <div class="price-value sl">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 1</div>
+                    <div class="price-value tp">???</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">TP 2</div>
+                    <div class="price-value tp">???</div>
+                </div>
+            </div>
+            <div class="signal-rationale" style="filter: blur(4px);">
+                <div class="rationale-title">🧠 AI Analysis</div>
+                Premium signal content blurred for free users.
+            </div>
+            
+            <div class="premium-overlay">
+                <div class="premium-icon">👑</div>
+                <div class="premium-title">Pro Signal</div>
+                <div class="premium-subtitle">This 89% confidence signal is waiting for you</div>
+                <div class="premium-features">
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Full entry, SL & TP levels</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Complete AI analysis</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Real-time notifications</span>
+                    </div>
+                    <div class="premium-feature">
+                        <div class="premium-feature-icon">✓</div>
+                        <span>Unlimited daily signals</span>
+                    </div>
+                </div>
+                <button class="btn btn-gold" onclick="openUpgrade()" style="min-width: 200px;">
+                    Unlock Pro — $29/mo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Signals</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">💼</span>
+            <span class="nav-label">Portfolio</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+        </div>
+    </nav>
+
+    <!-- Upgrade Modal -->
+    <div class="modal-backdrop" id="upgradeModal" onclick="if(event.target === this) closeUpgrade()">
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeUpgrade()">×</button>
+            <div class="modal-header">
+                <div class="modal-icon">⚡</div>
+                <div class="modal-title">Unlock Your Edge</div>
+                <div class="modal-subtitle">Join 15,000+ Pro traders earning consistently</div>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card popular">
+                    <div class="pricing-header">
+                        <div>
+                            <div class="pricing-name">Pro</div>
+                            <div style="font-size: 13px; color: var(--text-muted);">For serious traders</div>
+                        </div>
+                        <div class="pricing-price">
+                            <div class="pricing-amount">$29</div>
+                            <div class="pricing-period">/month</div>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Unlimited signals daily</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Real-time push notifications</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Advanced performance analytics</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>WhatsApp signal delivery</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Priority 24/7 support</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-gold" onclick="showToast('Starting checkout...')">
+                        Start Pro Trial →
+                    </button>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div>
+                            <div class="pricing-name">Elite</div>
+                            <div style="font-size: 13px; color: var(--text-muted);">Maximum advantage</div>
+                        </div>
+                        <div class="pricing-price">
+                            <div class="pricing-amount">$99</div>
+                            <div class="pricing-period">/month</div>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Everything in Pro</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>1-on-1 onboarding session</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Custom risk profiles</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>API access for automation</span>
+                        </li>
+                        <li class="pricing-feature">
+                            <div class="pricing-feature-icon">✓</div>
+                            <span>Dedicated account manager</span>
+                        </li>
+                    </ul>
+                    <button class="btn" onclick="showToast('Starting Elite onboarding...')">
+                        Go Elite →
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-guarantee">
+                <span>🔒</span>
+                <span>7-day money-back guarantee • Cancel anytime</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">✓</div>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('[data-count]');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-count'));
+                const isDecimal = target % 1 !== 0;
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        if (isDecimal) {
+                            counter.textContent = '$' + target.toFixed(2);
+                        } else if (target > 50) {
+                            counter.textContent = target + '%';
+                        } else {
+                            counter.textContent = target;
+                        }
+                        clearInterval(timer);
+                    } else {
+                        if (isDecimal) {
+                            counter.textContent = '$' + current.toFixed(2);
+                        } else if (target > 50) {
+                            counter.textContent = current.toFixed(0) + '%';
+                        } else {
+                            counter.textContent = Math.floor(current);
+                        }
+                    }
+                }, 16);
+            });
+        }
+
+        // Copy Signal
+        function copySignal(button) {
+            const card = button.closest('.signal-card');
+            const direction = card.querySelector('.signal-direction').textContent;
+            const prices = card.querySelectorAll('.price-value');
+            
+            const signalText = `
+🔬 ISOTOPE Elite Signal
+${direction} XAU/USD
+
+Entry: ${prices[0].textContent}
+SL: ${prices[1].textContent}
+TP1: ${prices[2].textContent}
+TP2: ${prices[3].textContent}
+
+AI Confidence: ${card.querySelector('.signal-confidence span:last-child').textContent}
+            `.trim();
+
+            navigator.clipboard.writeText(signalText);
+            
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<span>✓</span> Copied!';
+            button.style.background = 'var(--gradient-1)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.style.background = '';
+            }, 2000);
+
+            showToast('Signal copied to clipboard');
+        }
+
+        // Share Signal
+        function shareSignal() {
+            const shareText = '🔬 ISOTOPE Elite — AI-Powered Gold Signals\n\nGet 3 free signals daily + unlimited with Pro!\n\nJoin 15,000+ traders earning consistently.\n\n#ISOTOPE #GoldSignals #Trading';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ISOTOPE Elite',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                showToast('Share text copied!');
+            }
+        }
+
+        // Modal Functions
+        function openUpgrade() {
+            document.getElementById('upgradeModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUpgrade() {
+            document.getElementById('upgradeModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            animateCounters();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeUpgrade();
+        });
+    </script>
+</body>
+</html>

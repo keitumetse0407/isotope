@@ -1,0 +1,27 @@
+# ISOTOPE v2.0 — Python Dependencies
+
+# Core (Required)
+pandas>=2.0.0
+numpy>=1.24.0
+aiohttp>=3.9.0
+
+# Data Fetching
+yfinance>=0.2.36
+
+# Technical Analysis
+ta-lib>=0.4.28
+
+# Database (Optional)
+# better-sqlite3>=9.0.0
+
+# API/Dashboard (Optional)
+# fastapi>=0.109.0
+# uvicorn>=0.27.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.0.0

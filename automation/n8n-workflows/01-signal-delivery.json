@@ -1,0 +1,227 @@
+{
+  "name": "ISOTOPE — Workflow 1: Signal Delivery",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signal",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook (FastAPI Signal)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.confidence }}",
+              "operation": "largerEqual",
+              "value2": "0.6"
+            }
+          ]
+        }
+      },
+      "id": "validate-confidence",
+      "name": "Validate Confidence >= 60%",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "function formatSignal(signal) {\n  const slDistance = Math.abs(signal.entry - signal.stopLoss).toFixed(2);\n  const slPercent = ((slDistance / signal.entry) * 100).toFixed(2);\n  const tp1Distance = Math.abs(signal.takeProfit1 - signal.entry).toFixed(2);\n  const tp2Distance = Math.abs(signal.takeProfit2 - signal.entry).toFixed(2);\n  const confidencePercent = (signal.confidence * 100).toFixed(0);\n  const signalTime = new Date(signal.timestamp).toLocaleTimeString('en-ZA', {\n    timeZone: 'Africa/Johannesburg',\n    hour: '2-digit',\n    minute: '2-digit'\n  });\n\n  const reasons = signal.rationale ? signal.rationale.split(' + ') : ['AI confluence', 'Multi-factor'];\n\n  return {\n    text: `🔬 ISOTOPE SIGNAL — ${signal.instrument || 'XAU/USD'}\n\n📊 Direction: ${signal.direction}\n💰 Entry: $${signal.entry.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n🛑 Stop Loss: $${signal.stopLoss.toLocaleString('en-US', { minimumFractionDigits: 2 })} (-$${slDistance} | ${slPercent}%)\n🎯 TP1: $${signal.takeProfit1.toLocaleString('en-US', { minimumFractionDigits: 2 })} (+$${tp1Distance})\n🎯 TP2: $${signal.takeProfit2.toLocaleString('en-US', { minimumFractionDigits: 2 })} (+$${tp2Distance})\n📈 R:R = 1:${signal.riskReward.toFixed(1)}\n⚡ Confidence: ${confidencePercent}%\n\n🧠 Why This Signal:\n• ${reasons[0] || 'AI confluence analysis'}\n• ${reasons[1] || 'Multi-factor agreement'}\n\n⏰ Signal Time: ${signalTime} SAST\n\n───────────────────────────────────────────────────────────\n⚠️ DISCLAIMER: Educational only. Not financial advice.\nPast performance ≠ future results. Trade at own risk.\nWe are NOT FSCA licensed.\n───────────────────────────────────────────────────────────\n\n🤖 ISOTOPE v2.0 | ELEV8 DIGITAL | ${signal.id}`,\n    signalData: signal\n  };\n}\n\nreturn formatSignal($input.all()[0].json);"
+      },
+      "id": "format-message",
+      "name": "Format Signal Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $env.TELEGRAM_CHANNEL_ID }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send-telegram",
+      "name": "Send to Telegram Channel",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot Credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://waha:8765/sendMessage",
+        "sendHeaders": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "phone": "={{ $env.WHATSAPP_BROADCAST_LIST }}",
+          "message": "={{ $json.text }}",
+          "session": "default"
+        },
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Send to WAHA (WhatsApp)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "={{ $env.GOOGLE_SHEET_ID }}",
+        "sheetName": "Signal Log",
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "timestamp": "={{ $json.signalData.timestamp }}",
+            "signal_id": "={{ $json.signalData.id }}",
+            "instrument": "={{ $json.signalData.instrument || 'XAU/USD' }}",
+            "direction": "={{ $json.signalData.direction }}",
+            "entry": "={{ $json.signalData.entry }}",
+            "stop_loss": "={{ $json.signalData.stopLoss }}",
+            "take_profit_1": "={{ $json.signalData.takeProfit1 }}",
+            "take_profit_2": "={{ $json.signalData.takeProfit2 }}",
+            "confidence": "={{ $json.signalData.confidence }}",
+            "outcome": "=PENDING",
+            "win_loss": "=PENDING"
+          }
+        }
+      },
+      "id": "log-to-sheet",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1050, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "google-sheets-credentials",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "success": true,
+          "message": "Signal delivered",
+          "signalId": "={{ $json.signalData.id }}"
+        },
+        "options": {}
+      },
+      "id": "respond-success",
+      "name": "Respond to FastAPI",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook (FastAPI Signal)": {
+      "main": [
+        [
+          {
+            "node": "Validate Confidence >= 60%",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Confidence >= 60%": {
+      "main": [
+        [
+          {
+            "node": "Format Signal Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Signal Message": {
+      "main": [
+        [
+          {
+            "node": "Send to Telegram Channel",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to WAHA (WhatsApp)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Telegram Channel": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to WAHA (WhatsApp)": {
+      "main": [
+        [
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Respond to FastAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "workflow-1-v1",
+  "meta": {
+    "instanceId": "isotope-n8n"
+  },
+  "tags": [
+    {
+      "id": "1",
+      "name": "Signal Delivery",
+      "createdAt": "2026-03-28T00:00:00.000Z",
+      "updatedAt": "2026-03-28T00:00:00.000Z"
+    }
+  ]
+}

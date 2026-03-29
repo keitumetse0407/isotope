@@ -1,0 +1,131 @@
+{
+  "name": "ISOTOPE — Workflow 3: Referral Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "user/signup",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "signup-webhook",
+      "name": "Webhook (User Signup)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "function generateReferralCode(userData) {\n  const baseCode = userData.name ? \n    userData.name.toUpperCase().replace(/[^A-Z]/g, '').substring(0, 4) : 'USER';\n  const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');\n  const referralCode = baseCode + randomNum;\n  \n  return {\n    ...userData,\n    referralCode,\n    referralLink: `https://play.google.com/store/apps/details?id=com.elev8digital.isotope_app&ref=${referralCode}`,\n    shareMessage: `Use my code ${referralCode} for 3 days free Pro on ISOTOPE!\\n\\n${referralLink}`\n  };\n}\n\nreturn generateReferralCode($input.all()[0].json);"
+      },
+      "id": "gen-referral",
+      "name": "Generate Referral Code",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://185.167.97.193:8765/sendMessage",
+        "sendHeaders": {
+          "Content-Type": "application/json"
+        },
+        "body": "={{ JSON.stringify({ session: 'default', text: '🎉 Welcome to ISOTOPE!\\n\\nYour referral code: ' + $json.referralCode + '\\n\\nShare link:\\n' + $json.referralLink + '\\n\\nEvery friend who converts = 1 month FREE Elite!\\n\\nYour share message:\\n\"Use my code ' + $json.referralCode + ' for 3 days free Pro on ISOTOPE!\"' }) }}",
+        "options": {}
+      },
+      "id": "send-welcome-wa",
+      "name": "Send Welcome + Referral",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, referralCode: $json.referralCode, referralLink: $json.referralLink } }}",
+        "options": {}
+      },
+      "id": "signup-response",
+      "name": "Respond to App",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "referral/convert",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "convert-webhook",
+      "name": "Webhook (Referral Converted)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "functionCode": "function processConversion(data) {\n  const referrerCode = data.referralCode;\n  const newUserId = data.newUserId;\n  \n  // Look up referrer by code (mock - replace with DB query)\n  const referrer = {\n    userId: 'referrer_123',\n    name: 'Keitumetse',\n    whatsapp: '+27123456789'\n  };\n  \n  return {\n    referrer,\n    newUserId,\n    reward: '1 month FREE Elite',\n    message: `💰 YOUR REFERRAL CONVERTED!\\n\\n${referrer.name} just upgraded to Pro.\\n\\nReward: 1 month FREE Elite (activated automatically)\\n\\nKeep sharing → Keep earning free months 🚀`\n  };\n}\n\nreturn processConversion($input.all()[0].json);"
+      },
+      "id": "process-convert",
+      "name": "Process Conversion",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://185.167.97.193:8765/sendMessage",
+        "sendHeaders": {
+          "Content-Type": "application/json"
+        },
+        "body": "={{ JSON.stringify({ session: 'default', text: $json.message }) }}",
+        "options": {}
+      },
+      "id": "send-reward-wa",
+      "name": "Send Reward Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, reward: $json.reward } }}",
+        "options": {}
+      },
+      "id": "convert-response",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 600]
+    }
+  ],
+  "connections": {
+    "Webhook (User Signup)": {
+      "main": [[{ "node": "Generate Referral Code", "type": "main", "index": 0 }]]
+    },
+    "Generate Referral Code": {
+      "main": [[{ "node": "Send Welcome + Referral", "type": "main", "index": 0 }]]
+    },
+    "Send Welcome + Referral": {
+      "main": [[{ "node": "Respond to App", "type": "main", "index": 0 }]]
+    },
+    "Webhook (Referral Converted)": {
+      "main": [[{ "node": "Process Conversion", "type": "main", "index": 0 }]]
+    },
+    "Process Conversion": {
+      "main": [[{ "node": "Send Reward Notification", "type": "main", "index": 0 }]]
+    },
+    "Send Reward Notification": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "workflow-3-v1",
+  "tags": [{ "name": "Referral Automation" }]
+}

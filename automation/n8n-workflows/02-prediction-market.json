@@ -1,0 +1,148 @@
+{
+  "name": "ISOTOPE — Workflow 2: Prediction Market + Viral Loop",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prediction/vote",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "vote-webhook",
+      "name": "Webhook (User Vote)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "function processVote(vote) {\n  const userId = vote.userId;\n  const predictionId = vote.predictionId;\n  const userVote = vote.vote.toUpperCase();\n  \n  // Store vote in database (mock for now)\n  const voteRecord = {\n    userId,\n    predictionId,\n    vote: userVote,\n    timestamp: new Date().toISOString()\n  };\n  \n  // Calculate crowd consensus\n  const totalVotes = 100; // Mock - fetch from DB\n  const yesVotes = 73; // Mock - fetch from DB\n  const yesPercent = (yesVotes / totalVotes) * 100;\n  \n  return {\n    success: true,\n    vote: userVote,\n    crowdYesPercent: yesPercent.toFixed(1),\n    crowdNoPercent: (100 - yesPercent).toFixed(1),\n    message: userVote === 'YES' ? \n      `You voted YES! ${yesPercent.toFixed(0)}% of traders agree with you.` :\n      `You voted NO! ${yesPercent.toFixed(0)}% say YES, you're contrarian.`,\n    voteRecord\n  };\n}\n\nreturn processVote($input.all()[0].json);"
+      },
+      "id": "process-vote",
+      "name": "Process Vote",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.vote }}",
+              "operation": "equals",
+              "value2": "YES"
+            }
+          ]
+        }
+      },
+      "id": "check-vote-type",
+      "name": "Check Vote Type",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://185.167.97.193:8100/predictions/update-crowd",
+        "sendHeaders": {
+          "Content-Type": "application/json"
+        },
+        "body": "={{ JSON.stringify({ predictionId: $json.voteRecord.predictionId, vote: $json.vote }) }}",
+        "options": {}
+      },
+      "id": "update-crowd",
+      "name": "Update Crowd Consensus",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "function createShareMessage(voteData) {\n  const userName = voteData.userName || 'Trader';\n  const vote = voteData.vote;\n  const crowdPercent = voteData.crowdYesPercent;\n  \n  return {\n    whatsappShare: `🔮 My ISOTOPE Prediction:\\n\\nI voted ${vote} on today's gold question!\\n\\nCrowd consensus: ${crowdPercent}% YES\\n\\nThink I'm right? Vote now:\\nhttps://isotope.co.za/vote\\n\\n#GoldTrading #PredictionMarket`,\n    telegramShare: `🔮 <b>My ISOTOPE Prediction</b>\\n\\nI voted <b>${vote}</b> on today's gold question!\\n\\nCrowd: ${crowdPercent}% YES\\n\\nVote now: isotope.co.za/vote`,\n    sms: `I voted ${vote} on gold @ ISOTOPE. Crowd: ${crowdPercent}% YES. Vote: isotope.co.za/vote`\n  };\n}\n\nreturn { ...$input.all()[0].json, shareMessages: createShareMessage($input.all()[0].json) };"
+      },
+      "id": "create-share-msg",
+      "name": "Create Share Messages",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, ...$json } }}",
+        "options": {}
+      },
+      "id": "vote-response",
+      "name": "Respond to App",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "triggerTime": "17:00",
+        "timezone": "Africa/Johannesburg"
+      },
+      "id": "friday-cron",
+      "name": "Every Friday 17:00 SAST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "functionCode": "function calculateLeaderboard() {\n  // Mock leaderboard - replace with DB query\n  const leaderboard = [\n    { rank: 1, userId: 'u1', name: 'Thabo M.', score: 92.0, accuracy: 0.85, streak: 5 },\n    { rank: 2, userId: 'u2', name: 'Priya K.', score: 87.0, accuracy: 0.80, streak: 4 },\n    { rank: 3, userId: 'u3', name: 'Johan V.', score: 81.0, accuracy: 0.75, streak: 3 },\n  ];\n  \n  return { leaderboard, weekEnding: new Date().toISOString() };\n}\n\nreturn calculateLeaderboard();"
+      },
+      "id": "calc-leaderboard",
+      "name": "Calculate Leaderboard",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://185.167.97.193:8765/sendMessage",
+        "sendHeaders": {
+          "Content-Type": "application/json"
+        },
+        "body": "={{ JSON.stringify({ session: 'default', text: '🏆 WEEKLY LEADERBOARD\\n\\n🥇 ' + $json.leaderboard[0].name + ': ' + $json.leaderboard[0].score + ' pts (85% accuracy)\\n\\n🥈 ' + $json.leaderboard[1].name + ': ' + $json.leaderboard[1].score + ' pts\\n\\n🥉 ' + $json.leaderboard[2].name + ': ' + $json.leaderboard[2].score + ' pts\\n\\nTop 3 get FREE Elite next week!\\n\\nWeek 2 starts Monday. New questions. New winners.\\n\\nDownload: isotope.co.za' }) }}",
+        "options": {}
+      },
+      "id": "send-leaderboard-wa",
+      "name": "Send Leaderboard to WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 600]
+    }
+  ],
+  "connections": {
+    "Webhook (User Vote)": {
+      "main": [[{ "node": "Process Vote", "type": "main", "index": 0 }]]
+    },
+    "Process Vote": {
+      "main": [[{ "node": "Check Vote Type", "type": "main", "index": 0 }]]
+    },
+    "Check Vote Type": {
+      "main": [[{ "node": "Update Crowd Consensus", "type": "main", "index": 0 }]]
+    },
+    "Update Crowd Consensus": {
+      "main": [[{ "node": "Create Share Messages", "type": "main", "index": 0 }]]
+    },
+    "Create Share Messages": {
+      "main": [[{ "node": "Respond to App", "type": "main", "index": 0 }]]
+    },
+    "Every Friday 17:00 SAST": {
+      "main": [[{ "node": "Calculate Leaderboard", "type": "main", "index": 0 }]]
+    },
+    "Calculate Leaderboard": {
+      "main": [[{ "node": "Send Leaderboard to WhatsApp", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" },
+  "versionId": "workflow-2-v1",
+  "tags": [{ "name": "Prediction Market" }]
+}
