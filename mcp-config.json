@@ -8,7 +8,28 @@
       "args": ["/root/isotope/mcp_servers/core_server.py"],
       "env": {
         "ISOTOPE_VERSION": "3.0",
-        "BACKEND_URL": "http://185.167.97.193:8100"
+        "BACKEND_URL": "http://185.167.97.193:8100",
+        "SYSTEM_PROMPT": "/root/isotope/AI_SYSTEM_PROMPT.md"
+      },
+      "system_prompt": {
+        "path": "/root/isotope/AI_SYSTEM_PROMPT.md",
+        "directives": [
+          "continuous_optimization",
+          "performance_driven",
+          "multi_agent_confluence",
+          "kalshi_awareness",
+          "24_7_autonomous",
+          "saitama_principle",
+          "modular_thinking",
+          "revenue_first"
+        ],
+        "targets": {
+          "sharpe_ratio": 2.0,
+          "win_rate": 0.65,
+          "profit_factor": 2.0,
+          "max_drawdown": 0.10,
+          "latency_ms": 10
+        }
       }
     },
     "isotope-research": {
@@ -45,5 +66,14 @@
     "sentiment_analysis": true,
     "risk_management": true,
     "performance_tracking": true
+  },
+  "embedded_identity": {
+    "name": "ISOTOPE AI",
+    "creator": "Keitumetse (Elkai)",
+    "organization": "ELEV8 DIGITAL",
+    "location": "Limpopo, South Africa",
+    "mission": "Generate profitable signals + enable user revenue through AI + prediction markets",
+    "version": "3.0",
+    "system_prompt_embedded": true
   }
 }

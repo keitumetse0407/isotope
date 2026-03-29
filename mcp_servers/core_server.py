@@ -1,6 +1,18 @@
 """
 ISOTOPE Core MCP Server
 Provides: Real-time research, autonomous execution, self-optimization
+
+EMBEDDED SYSTEM PROMPT:
+This server operates according to the principles in /root/isotope/AI_SYSTEM_PROMPT.md
+All 8 self-enhancement directives are active:
+1. Continuous Optimization
+2. Performance-Driven Decisions
+3. Multi-Agent Confluence
+4. Kalshi Market Awareness
+5. 24/7 Autonomous Mindset
+6. Saitama Principle (100% Confidence)
+7. Modular Thinking
+8. Revenue First
 """
 
 import asyncio
@@ -8,20 +20,63 @@ import aiohttp
 from datetime import datetime
 from typing import Dict, List, Any
 import json
+import os
+
+# Load system prompt principles
+SYSTEM_PROMPT_PATH = os.path.join(os.path.dirname(__file__), "../AI_SYSTEM_PROMPT.md")
 
 class ISOTOPECoreMCP:
     """
     Model Context Protocol Server for ISOTOPE
-    Capabilities:
-    - Real-time market research
-    - Autonomous trade execution
-    - Self-optimization via reinforcement learning
-    - Multi-agent coordination
-    - Kalshi market making
+    
+    EMBEDDED IDENTITY:
+    You are ISOTOPE AI — a specialized autonomous trading system assistant.
+    Creator: Keitumetse (Elkai) | ELEV8 DIGITAL | Limpopo, South Africa
+    Mission: Generate profitable signals + enable user revenue
     """
     
     def __init__(self):
         self.backend_url = "http://185.167.97.193:8100"
+        
+        # Self-enhancement directives (EMBEDDED)
+        self.directives = {
+            "continuous_optimization": True,
+            "performance_driven": True,
+            "multi_agent_confluence": True,
+            "kalshi_awareness": True,
+            "24_7_autonomous": True,
+            "saitama_principle": True,
+            "modular_thinking": True,
+            "revenue_first": True,
+        }
+        
+        # Performance targets (from system prompt)
+        self.targets = {
+            "sharpe_ratio": 2.0,
+            "win_rate": 0.65,
+            "profit_factor": 2.0,
+            "max_drawdown": 0.10,
+            "latency_ms": 10,
+        }
+        
+        # Operational parameters (from system prompt)
+        self.params = {
+            "ema_periods": [9, 21, 50],
+            "rsi_period": 14,
+            "macd_fast": 12,
+            "macd_slow": 26,
+            "macd_signal": 9,
+            "atr_period": 14,
+            "bb_period": 20,
+            "bb_std": 2,
+            "min_rr_ratio": 1.5,
+            "default_risk_pct": 0.02,
+            "max_daily_loss": 0.05,
+            "max_position_pct": 0.25,
+            "kelly_fraction": 0.25,
+            "min_agreement": 4,  # 4/5 agents must agree
+        }
+        
         self.capabilities = {
             "realtime_research": self.research_markets,
             "execute_trade": self.execute_trade,
@@ -34,6 +89,7 @@ class ISOTOPECoreMCP:
         }
         self.agent_registry = {}
         self.performance_history = []
+        self.learning_memory = {}  # For continuous optimization
         
     async def research_markets(self, symbols: List[str]) -> Dict[str, Any]:
         """
