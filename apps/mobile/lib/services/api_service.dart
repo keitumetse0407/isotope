@@ -92,6 +92,22 @@ class ApiService {
   // SIGNAL ENDPOINTS
   // ============================================
 
+  Future<Signal?> getLatestSignal() async {
+    try {
+      final response = await _client.get(
+        Uri.parse('$baseUrl/signals/latest'),
+      );
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        return Signal.fromJson(json);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching latest signal: $e');
+      return null;
+    }
+  }
+
   Future<List<Signal>> getSignals({String? tier}) async {
     try {
       String url = '$baseUrl/signals';

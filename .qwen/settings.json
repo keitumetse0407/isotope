@@ -3,7 +3,12 @@
     "allow": [
       "Bash(mkdir *)",
       "Bash(python *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(cd *)",
+      "Bash(sleep *)",
+      "Bash(curl *)",
+      "Bash(cat *)",
+      "Bash(tail *)"
     ]
   },
   "$version": 3

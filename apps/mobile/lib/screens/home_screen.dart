@@ -11,6 +11,10 @@ import 'signals_screen.dart';
 import 'portfolio_screen.dart';
 import 'profile_screen.dart';
 import 'upgrade_screen.dart';
+import 'demo_trading_screen.dart';
+import 'prediction_market_screen.dart';
+import 'trading_24_7_screen.dart';
+import 'saitama_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final User? user;
@@ -55,12 +59,15 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: [
           _buildHomeTab(),
-          SignalsScreen(user: widget.user),
+          PredictionMarketScreen(), // Kalshi-style predictions
+          Trading247Screen(), // 24/7 AI trading
+          DemoTradingScreen(), // Demo trading
           PortfolioScreen(user: widget.user),
           ProfileScreen(
             user: widget.user!,
             onLogout: _handleLogout,
           ),
+          SaitamaScreen(isUnlocked: false), // Easter egg
         ],
       ),
       bottomNavigationBar: _buildBottomNav(),
@@ -386,16 +393,20 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
-            label: 'Signals',
+            icon: Icon(Icons.poll),
+            label: 'Markets',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
-            label: 'Portfolio',
+            icon: Icon(Icons.rocket),
+            label: '24/7 AI',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.swap_horiz),
+            label: 'Demo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu),
+            label: 'More',
           ),
         ],
       ),

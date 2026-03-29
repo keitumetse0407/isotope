@@ -1,59 +1,49 @@
+# ISOTOPE MCP Server Configuration
+# Model Context Protocol - Enhanced AI Capabilities
+
 {
   "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/root/isotope"],
-      "env": {},
-      "description": "Full filesystem access for ISOTOPE project"
-    },
-    "search": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {},
-      "description": "Code search and repository access"
-    },
-    "gold-sentiment": {
+    "isotope-core": {
       "command": "python3",
-      "args": ["-m", "mcp_server_sentiment"],
+      "args": ["/root/isotope/mcp_servers/core_server.py"],
       "env": {
-        "SENTIMENT_SOURCES": "reuters,kitco,bloomberg,gold.org"
-      },
-      "description": "Real-time gold sentiment analysis from news feeds"
+        "ISOTOPE_VERSION": "3.0",
+        "BACKEND_URL": "http://185.167.97.193:8100"
+      }
+    },
+    "isotope-research": {
+      "command": "python3",
+      "args": ["/root/isotope/mcp_servers/research_server.py"],
+      "env": {
+        "RESEARCH_MODE": "realtime",
+        "DATA_SOURCES": "tradingview,coingecko,forexfactory,reuters"
+      }
+    },
+    "isotope-execution": {
+      "command": "python3",
+      "args": ["/root/isotope/mcp_servers/execution_server.py"],
+      "env": {
+        "EXECUTION_MODE": "24/7",
+        "MAX_LATENCY_MS": "5"
+      }
+    },
+    "isotope-optimizer": {
+      "command": "python3",
+      "args": ["/root/isotope/mcp_servers/optimizer_server.py"],
+      "env": {
+        "OPTIMIZATION_TARGET": "sharpe_ratio",
+        "REBALANCE_FREQUENCY": "hourly"
+      }
     }
   },
-  "resources": {
-    "gold-price-feed": {
-      "uri": "wss://api.tradingview.com/xauusd/live",
-      "type": "websocket",
-      "refreshInterval": 1000
-    },
-    "news-sentiment": {
-      "uri": "https://api.reuters.com/gold/news",
-      "type": "rest",
-      "refreshInterval": 60000
-    }
-  },
-  "tools": {
-    "fetch_gold_price": {
-      "description": "Fetch real-time XAU/USD price data",
-      "inputSchema": {
-        "timeframe": "1m|5m|15m|1h|4h|1d"
-      }
-    },
-    "analyze_sentiment": {
-      "description": "Analyze gold market sentiment from news sources",
-      "inputSchema": {
-        "sources": "array of news sources",
-        "timeRange": "1h|6h|24h"
-      }
-    },
-    "backtest_signal": {
-      "description": "Backtest trading signal against historical data",
-      "inputSchema": {
-        "strategy": "string",
-        "startDate": "ISO date",
-        "endDate": "ISO date"
-      }
-    }
+  "capabilities": {
+    "realtime_research": true,
+    "autonomous_execution": true,
+    "self_optimization": true,
+    "multi_agent_coordination": true,
+    "kalshi_market_making": true,
+    "sentiment_analysis": true,
+    "risk_management": true,
+    "performance_tracking": true
   }
 }
